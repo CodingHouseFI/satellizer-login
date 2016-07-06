@@ -4,6 +4,9 @@ var app = angular.module('myApp', ['ui.router', 'satellizer']);
 
 app.config(function($authProvider) {
 
+  $authProvider.loginUrl = '/api/users/login';
+  $authProvider.signupUrl = '/api/users/signup';
+
   $authProvider.facebook({
     clientId: '638147416343689',
     url: '/api/users/facebook'

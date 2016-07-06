@@ -11,10 +11,38 @@ let router = express.Router();
 //    /api/users
 
 
+router.get('/', (req, res) => {
+  User.find({}, (err, users) => {
+    res.status(err ? 400 : 200).send(err || users);
+  });
+});
+
+router.delete('/all', (req, res) => {
+  User.remove({}, err => {
+    res.status(err ? 400 : 200).send(err);
+  });
+});
+
+
 router.get('/profile', User.authMiddleware, (req, res) => {
   console.log('req.user:', req.user);
   res.send(req.user);
 });
+
+router.post('/login', (req, res) => {
+  console.log('req.body:', req.body);
+
+  User.authenticate(req.body, (err, token) => {
+    res.status(err ? 400 : 200).send(err || {token: token});
+  });
+});
+
+router.post('/signup', (req, res) => {
+  User.register(req.body, (err, token) => {
+    res.status(err ? 400 : 200).send(err || {token: token});
+  });
+});
+
 
 router.post('/facebook', (req, res) => {
 

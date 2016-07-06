@@ -38,11 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 ///// ROUTERS /////
 
-app.use((req, res, next) => {
-  console.log('req.headers:', req.headers);
-  next();
-})
-
 app.use('/api', require('./routes/api'));
 
 app.get('/', (req, res) => {
