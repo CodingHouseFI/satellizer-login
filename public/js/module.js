@@ -38,6 +38,27 @@ app.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
+    .state('users', {
+      url: '/users',
+      templateUrl: '/html/users.html',
+      controller: 'usersCtrl',
+      resolve: {
+        Users: function(User) {
+          return User.getAll();
+        }
+      }
+    })
+
     
   $urlRouterProvider.otherwise('/');
 });
+
+
+
+
+
+
+
+
+
+

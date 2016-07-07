@@ -11,4 +11,9 @@ app.service('User', function($http, $q) {
       });
   };
 
+  this.getAll = () => {
+    return $http.get('/api/users')
+      .then(res => $q.resolve(res.data));
+  }
+
 });

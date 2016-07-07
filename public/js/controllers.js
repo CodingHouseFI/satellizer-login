@@ -70,3 +70,16 @@ app.controller('profileCtrl', function($scope, Profile) {
   $scope.user = Profile;
 
 });
+
+
+app.controller('usersCtrl', function($scope, Users) {
+  console.log('usersCtrl!');
+
+  $scope.users = Users;
+
+});
+
+
+
+
+

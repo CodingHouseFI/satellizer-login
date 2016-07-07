@@ -11,22 +11,35 @@ let router = express.Router();
 //    /api/users
 
 
-router.get('/', (req, res) => {
+router.get('/', User.authorize({admin: true}), (req, res) => {
   User.find({}, (err, users) => {
     res.status(err ? 400 : 200).send(err || users);
   });
 });
 
-router.delete('/all', (req, res) => {
+
+router.get('/profile', User.authorize({admin: false}), (req, res) => {
+  console.log('req.user:', req.user);
+  res.send(req.user);
+});
+
+router.delete('/all', User.authorize({admin: true}), (req, res) => {
   User.remove({}, err => {
     res.status(err ? 400 : 200).send(err);
   });
 });
 
 
-router.get('/profile', User.authMiddleware, (req, res) => {
-  console.log('req.user:', req.user);
-  res.send(req.user);
+router.put('/:id/toggleAdmin', User.authorize({admin: true}), (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if(err || !user) return res.status(400).send(err || {error: 'User not found.'});
+
+    user.admin = !user.admin;
+
+    user.save(err => {
+      res.status(err ? 400 : 200).send(err);
+    });
+  });
 });
 
 router.post('/login', (req, res) => {

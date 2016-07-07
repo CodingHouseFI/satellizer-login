@@ -28,6 +28,7 @@
       <button class="btn" ui-sref='register'>Register</button>
     </span>
     <span ng-if='isAuthenticated()'>
+      <button class="btn" ui-sref='users'>All Users</button>
       <button class="btn" ng-click='logout()'>Logout</button>
     </span>
 
