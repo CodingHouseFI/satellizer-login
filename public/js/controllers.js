@@ -2,18 +2,18 @@
 
 var app = angular.module('myApp');
 
-app.controller('mainCtrl', function($scope, $state, $auth) {
-  console.log('mainCtrl!');
-
+app.controller('mainCtrl', function($scope, $state, $auth, User) {
   $scope.isAuthenticated = () => $auth.isAuthenticated();
 
   $scope.logout = () => {
-    $auth.logout();
-    $state.go('home');
+    User.logout() 
+      .then(() => {
+        $state.go('home');
+      })
   };
 
   $scope.authenticate = provider => {
-    $auth.authenticate(provider)
+    User.authenticate(provider)
       .then(res => {
         $state.go('home');
       })
@@ -23,12 +23,9 @@ app.controller('mainCtrl', function($scope, $state, $auth) {
   };
 });
 
-
-app.controller('loginCtrl', function($scope, $state, $auth) {
-  console.log('loginCtrl!');
-
+app.controller('loginCtrl', function($scope, $state, User) {
   $scope.login = () => {
-    $auth.login($scope.user)
+    User.login($scope.user)
       .then(res => {
         console.log('res:', res);
         $state.go('profile');
@@ -37,21 +34,16 @@ app.controller('loginCtrl', function($scope, $state, $auth) {
         console.log('err:', err);
       }); 
   };
-
 });
 
-
-app.controller('registerCtrl', function($scope, $state, $auth) {
-  console.log('registerCtrl!');
-
+app.controller('registerCtrl', function($scope, $state, User) {
   $scope.register = () => {
     if($scope.user.password !== $scope.user.password2) {
       $scope.user.password = null;
       $scope.user.password2 = null;
       alert('Passwords must match.  Try again.');
     } else {
-      
-      $auth.signup($scope.user)
+      User.signup($scope.user)
         .then(res => {
           console.log('res:', res);
           $state.go('login');
@@ -61,25 +53,20 @@ app.controller('registerCtrl', function($scope, $state, $auth) {
         });      
     }
   };
-
 });
 
 app.controller('profileCtrl', function($scope, Profile) {
-  console.log('profileCtrl!');
-
   $scope.user = Profile;
-
 });
 
-
-app.controller('usersCtrl', function($scope, Users) {
-  console.log('usersCtrl!');
-
+app.controller('usersCtrl', function($scope, User, Users) {
   $scope.users = Users;
 
+  $scope.sendMessage = user => {
+    User.sendMessage(user);
+  };
+
+  $scope.$on('message', function(ev, data) {
+    console.log('data:', data);
+  });
 });
-
-
-
-
-

@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const request = require('request');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -106,6 +107,49 @@ userSchema.statics.authenticate = function(userObj, cb) {
         cb(null, token);
       });
     });
+};
+
+userSchema.statics.facebook = function(authCode, cb) {
+  var fields = ['id', 'email', 'first_name', 'last_name', 'link', 'name', 'picture'];
+  var accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
+  var graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + fields.join(',');
+
+  var params = {
+    code: authCode.code,
+    client_id: authCode.clientId,
+    client_secret: process.env.FACEBOOK_SECRET,
+    redirect_uri: authCode.redirectUri
+  };
+  request.get({ url: accessTokenUrl, qs: params, json: true }, function(err, response, accessToken) {
+    if (response.statusCode !== 200) {
+      return cb({ message: accessToken.error.message });
+    }
+    request.get({ url: graphApiUrl, qs: accessToken, json: true }, function(err, response, profile) {
+      if (response.statusCode !== 200) {
+        return cb({ message: profile.error.message });
+      }
+      User.findOne({facebook: profile.id}, (err, user) => {
+        if(err) return cb(err);
+
+        if(user) {
+          let token = user.generateToken();
+          cb(null, token);
+        } else {
+          let newUser = new User({
+            email: profile.email,
+            displayName: profile.name,
+            profileImage: profile.picture.data.url,
+            facebook: profile.id
+          });
+          newUser.save((err, savedUser) => {
+            if(err) return cb(err);
+            let token = savedUser.generateToken();
+            cb(null, token);
+          });
+        }
+      });
+    });
+  });
 };
 
 

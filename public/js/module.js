@@ -1,9 +1,13 @@
 'use strict';
 
-var app = angular.module('myApp', ['ui.router', 'satellizer']);
+var app = angular.module('myApp', ['ui.router', 'satellizer', 'btford.socket-io']);
+
+app.run(function($rootScope, User) {
+  $rootScope.currentUser = {};
+  User.setCurrent();
+});
 
 app.config(function($authProvider) {
-
   $authProvider.loginUrl = '/api/users/login';
   $authProvider.signupUrl = '/api/users/signup';
 
@@ -11,7 +15,6 @@ app.config(function($authProvider) {
     clientId: '638147416343689',
     url: '/api/users/facebook'
   });
-
 });
 
 app.config(function($stateProvider, $urlRouterProvider) {
@@ -34,7 +37,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
       controller: 'profileCtrl',
       resolve: {
         Profile: function(User) {
-          return User.profile();
+          return User.getProfile();
         }
       }
     })
@@ -49,16 +52,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-    
   $urlRouterProvider.otherwise('/');
 });
-
-
-
-
-
-
-
-
-
-

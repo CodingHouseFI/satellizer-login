@@ -19,6 +19,8 @@
     "angular": "^1.5.7",
     "bootstrap": "^3.3.6",
     "angular-ui-router": "^0.3.1",
-    "satellizer": "^0.14.1"
+    "satellizer": "^0.14.1",
+    "socket.io-client": "^1.4.8",
+    "angular-socket-io": "^0.7.0"
   }
 }

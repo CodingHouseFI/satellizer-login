@@ -10,6 +10,8 @@
   <script src="/bower_components/angular/angular.js"></script>
   <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="/bower_components/satellizer/satellizer.min.js"></script>
+  <script src="/bower_components/socket.io-client/socket.io.js"></script>
+  <script src="/bower_components/angular-socket-io/socket.js"></script>
 
   <script src="/js/module.js"></script>
   <script src="/js/controllers.js"></script>
@@ -18,9 +20,8 @@
 </head>
 <body ng-app='myApp' ng-controller='mainCtrl'>
   <div class="container">
-    <h1><%= title %></h1>
+    <h1><%= title %> <span ng-if='isAuthenticated()'>- {{currentUser.email}}</span></h1>
 
-    <h2> isAuthenticated: {{ isAuthenticated() }} </h2>
 
     <button class="btn" ui-sref='home'>Home</button>
     <span ng-if='!isAuthenticated()'>
